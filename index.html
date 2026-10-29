@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050a18">
+  <meta name="description" content="ECsim-X: Energy-Conserving Semi-Implicit Particle-in-Cell simulations, scientific method, GPU acceleration, benchmarks, and developer resources.">
+  <title>Home | ECsim-X</title>
+  <link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="nav-wrap" data-site-nav></div></header>
+  <main id="main">
+
+<section class="hero"><div class="container hero-grid"><div class="hero-copy">
+  <div class="eyebrow">Scientific computing · Plasma physics</div>
+  <h1>Space plasma physics.<br><span class="accent">Simulated with ECsim-X.</span></h1>
+  <p class="lead">ECsim-X is a scientific application for space plasma physics that solves plasma simulation problems using the Energy-Conserving Semi-Implicit Particle-in-Cell method.</p>
+  <div class="hero-actions"><a class="button primary" href="scientific-method.html">Explore the method ↗</a><a class="button" href="documentation.html">Using ECsim-X</a></div>
+  <div class="tag-row"><span class="pill">Semi-implicit integration</span><span class="pill">Energy conservation</span><span class="pill">CPU / GPU</span></div>
+</div><div class="hero-visual">
+  <div class="grid-bg">
+    <svg class="plasma-art" viewBox="0 0 480 390" role="img" aria-label="Conceptual illustration of a particle-in-cell computational grid and electromagnetic field lines">
+      <defs>
+        <linearGradient id="field" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#18d7ff"/><stop offset=".55" stop-color="#397fff"/><stop offset="1" stop-color="#e91a91"/></linearGradient>
+        <radialGradient id="particle"><stop stop-color="#eaffff"/><stop offset=".45" stop-color="#17c9f5"/><stop offset="1" stop-color="#1474d7" stop-opacity=".1"/></radialGradient>
+      </defs>
+      <g stroke="#1aa9e8" stroke-opacity=".65" stroke-width="1.4" fill="none">
+        <path d="M60 90 240 25 420 90 420 285 240 365 60 285Z"/><path d="M60 90 240 155 420 90M240 25V155M240 155V365M60 285 240 155 420 285"/><path d="M150 58 150 325M330 58 330 325" stroke-dasharray="5 7"/>
+      </g>
+      <g fill="#17c9f5">
+        <circle cx="60" cy="90" r="6"/><circle cx="240" cy="25" r="6"/><circle cx="420" cy="90" r="6"/><circle cx="420" cy="285" r="6"/><circle cx="240" cy="365" r="6"/><circle cx="60" cy="285" r="6"/><circle cx="240" cy="155" r="6"/><circle cx="150" cy="58" r="5"/><circle cx="330" cy="58" r="5"/><circle cx="150" cy="325" r="5"/><circle cx="330" cy="325" r="5"/>
+      </g>
+      <path d="M60 188 C115 80 170 95 240 195 S365 310 420 175 C370 80 310 105 240 195 S105 300 60 188Z" fill="none" stroke="url(#field)" stroke-width="8" stroke-linecap="round"/>
+      <g fill="url(#particle)"><circle cx="105" cy="150" r="19"/><circle cx="168" cy="245" r="14"/><circle cx="285" cy="135" r="17"/><circle cx="370" cy="225" r="20"/><circle cx="246" cy="285" r="12"/><circle cx="305" cy="250" r="8"/></g>
+      <g stroke="#f1f7ff" stroke-width="2" stroke-linecap="round" opacity=".9"><path d="M160 315l40-17M170 333l40-17M180 351l40-17"/></g>
+    </svg>
+  </div>
+</div></div></section>
+<section class="section-tight"><div class="container"><div class="stat-strip">
+  <div class="stat"><strong>Numerical method</strong><span>Energy-conserving semi-implicit PIC</span></div>
+  <div class="stat"><strong>Execution</strong><span>Massively parallel simulation</span></div>
+  <div class="stat"><strong>Acceleration</strong><span>GPU implementation focus</span></div>
+  <div class="stat"><strong>Publicly available</strong><span>Access and use subject to project terms</span></div>
+</div></div></section>
+<section class="section"><div class="container"><div class="section-heading"><div class="eyebrow">Explore ECsim-X</div><h2>From numerical foundations to implementation details</h2><p>Explore the physical model, simulation workflow, performance evaluation, and resources for users and developers. Repository-specific details are marked where they still need verification.</p></div>
+<div class="cards">
+  <article class="card"><div class="card-icon">01</div><h3><a href="scientific-method.html">Scientific Method</a></h3><p>Review PIC fundamentals, semi-implicit time integration, particle-grid coupling, and energy diagnostics.</p><a class="card-link" href="scientific-method.html">Read the method ↗</a></article>
+  <article class="card"><div class="card-icon">02</div><h3><a href="gpu-acceleration.html">GPU Acceleration</a></h3><p>Explore conceptual execution flows, memory considerations, parallel work, and profiling priorities.</p><a class="card-link" href="gpu-acceleration.html">Explore GPU computing ↗</a></article>
+  <article class="card"><div class="card-icon">03</div><h3><a href="benchmarks.html">Benchmarks</a></h3><p>See the planned dashboard for runtime, speedup, scaling, throughput, and memory measurements.</p><a class="card-link" href="benchmarks.html">View benchmark framework ↗</a></article>
+  <article class="card"><div class="card-icon">04</div><h3><a href="documentation.html">Documentation</a></h3><p>Find user-oriented guidance for installation, configuration, running simulations, and diagnostics.</p><a class="card-link" href="documentation.html">Browse documentation ↗</a></article>
+  <article class="card"><div class="card-icon">05</div><h3><a href="developer-guide.html">Developer Guide</a></h3><p>Learn about the code structure, scientific validation, development practices, and project contribution process.</p><a class="card-link" href="developer-guide.html">Open developer resources ↗</a></article>
+  <article class="card"><div class="card-icon">06</div><h3><a href="applications.html">Applications</a></h3><p>Review potential use cases and distinguish them from documented ECsim-X simulations.</p><a class="card-link" href="applications.html">Explore applications ↗</a></article>
+</div></div></section>
+<section class="section developer-credits"><div class="container"><div class="section-heading"><div class="eyebrow">People behind the code</div><h2>Code developers</h2><p>Development credits are grouped by implementation to recognize the people associated with each version. Names are presented without ranking, and their appearance across multiple versions reflects involvement in more than one implementation.</p></div><div class="developer-grid developer-grid-three"><article class="developer-card"><div class="developer-card-top"><span class="developer-kicker">MPI implementation</span><h3>ECsim</h3></div><ul><li>G. Lapenta</li><li>Gonzalez-Herrero</li><li>E. Boella</li></ul></article><article class="developer-card developer-card-featured"><div class="developer-card-top"><span class="developer-kicker">OpenACC implementation</span><h3>ECsim-X <span class="implementation-tag">OpenACC</span></h3></div><ul><li>E. Boella</li><li>N. Shukla</li><li>M. Innocenti</li><li>F. Spiga</li></ul></article><article class="developer-card developer-card-featured"><div class="developer-card-top"><span class="developer-kicker">CUDA implementation</span><h3>ECsim-X <span class="implementation-tag">CUDA</span></h3></div><ul><li>C. Tortoriello</li><li>L. Carpentieri</li><li>N. Shukla</li><li>E. Boella</li><li>B. Cosenza</li></ul></article></div></div></section>
+<section class="section-tight"><div class="container split"><div><div class="eyebrow">Designed for researchers and developers</div><h2>Scientific clarity. Engineering detail.</h2><p>The site separates the scientific method, practical simulation use, and development guidance. ECsim-X is publicly available research software; no open-source licensing status is implied here.</p><a class="text-link" href="about.html">About this project ↗</a></div><div class="visual-panel"><svg viewBox="0 0 520 210" width="100%" role="img" aria-label="Conceptual flow from particles through field solve to parallel execution"><g font-family="monospace" font-size="13" text-anchor="middle"><rect x="8" y="42" width="140" height="88" rx="10" fill="#0c2744" stroke="#168dc4"/><text x="78" y="78" fill="#eaf8ff">Particles</text><text x="78" y="99" fill="#8eb5d3" font-size="10">Advance / deposit</text><rect x="190" y="42" width="140" height="88" rx="10" fill="#0c2744" stroke="#168dc4"/><text x="260" y="78" fill="#eaf8ff">Fields</text><text x="260" y="99" fill="#8eb5d3" font-size="10">Solve / interpolate</text><rect x="372" y="42" width="140" height="88" rx="10" fill="#102c42" stroke="#18c9f5"/><text x="442" y="78" fill="#eaf8ff">Parallel</text><text x="442" y="99" fill="#8eb5d3" font-size="10">CPU / GPU pathways</text><path d="M148 86h37m-7-6 7 6-7 6M330 86h37m-7-6 7 6-7 6" fill="none" stroke="#18c9f5" stroke-width="2"/><text x="260" y="177" fill="#8ca5c1" font-size="11">Conceptual workflow · verify implementation in source</text></g></svg></div></div></section>
+  </main>
+  <footer class="footer" data-site-footer></footer>
+</body>
+</html>

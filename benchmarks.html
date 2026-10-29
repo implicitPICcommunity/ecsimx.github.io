@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050a18">
+  <meta name="description" content="ECsim-X: Energy-Conserving Semi-Implicit Particle-in-Cell simulations, scientific method, GPU acceleration, benchmarks, and developer resources.">
+  <title>Benchmarks | ECsim-X</title>
+  <link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="nav-wrap" data-site-nav></div></header>
+  <main id="main">
+
+<section class="page-hero"><div class="container"><div class="breadcrumbs"><a href="index.html">Home</a> / Benchmarks</div><div class="eyebrow">Performance and scalability</div><h1>Benchmark performance with reproducible evidence</h1><p class="lead">This dashboard defines the measurements needed to evaluate CPU/GPU performance and parallel scalability. No benchmark dataset was provided, so all charts remain explicitly labeled placeholders rather than fabricated results.</p></div></section>
+<div class="container page-layout"><article class="article"><h2 id="overview">Dashboard overview</h2><div class="notice"><strong>Data status: not connected.</strong> No runtime, speedup, throughput, memory, or scaling measurements are included in the supplied materials. Replace these placeholders with measured results before drawing conclusions.</div><div class="benchmark-grid"><div class="card"><h3>CPU vs GPU runtime</h3><div class="chart-placeholder"><div><strong>Awaiting benchmark data</strong><span>Runtime (s) vs. workload size</span></div></div></div><div class="card"><h3>Speedup and throughput</h3><div class="chart-placeholder"><div><strong>Awaiting benchmark data</strong><span>Speedup (×) · particles/s or cells/s</span></div></div></div><div class="card"><h3>Strong scaling</h3><div class="chart-placeholder"><div><strong>Awaiting benchmark data</strong><span>Fixed problem size vs. resources</span></div></div></div><div class="card"><h3>Weak scaling</h3><div class="chart-placeholder"><div><strong>Awaiting benchmark data</strong><span>Fixed workload per resource</span></div></div></div></div>
+<h2 id="metrics">Metrics to report</h2><div class="table-wrap"><table><thead><tr><th>Metric</th><th>Recommended reporting</th><th>Status</th></tr></thead><tbody><tr><td>Runtime</td><td>Seconds per timestep and end-to-end elapsed time</td><td><span class="placeholder">Placeholder</span></td></tr><tr><td>Speedup</td><td>Reference runtime divided by comparison runtime, with reference stated</td><td><span class="placeholder">Placeholder</span></td></tr><tr><td>Throughput</td><td>Particles/s or grid cells/s with a precise definition</td><td><span class="placeholder">Placeholder</span></td></tr><tr><td>Strong scaling</td><td>Fixed global problem size across resource counts</td><td><span class="placeholder">Placeholder</span></td></tr><tr><td>Weak scaling</td><td>Fixed problem size per resource, with total size reported</td><td><span class="placeholder">Placeholder</span></td></tr><tr><td>Memory</td><td>Peak and steady-state host/device memory</td><td><span class="placeholder">Placeholder</span></td></tr></tbody></table></div>
+<h2 id="protocol">Reproducible benchmark protocol</h2><ol><li>Record source revision, build type, compiler, flags, dependencies, and precision.</li><li>Record hardware model, device count, CPU topology, memory, and interconnect.</li><li>Specify mesh dimensions, particle count, physical parameters, and output frequency.</li><li>Separate warm-up, initialization, timestep, I/O, and total runtime where relevant.</li><li>Repeat measurements and report a defined statistic and variability.</li><li>Verify numerical diagnostics for every configuration being compared.</li></ol>
+<h2 id="data">Data integration</h2><p>Suggested future schema: each measurement should include a case identifier, revision, timestamp, backend, hardware, resource count, problem size, precision, runtime, memory use, and validation status. Plotting should be connected to actual structured data only after the schema and units are agreed upon.</p></article><aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#overview">Dashboard overview</a><a href="#metrics">Metrics</a><a href="#protocol">Reproducible protocol</a><a href="#data">Data integration</a></aside></div>
+  </main>
+  <footer class="footer" data-site-footer></footer>
+</body>
+</html>

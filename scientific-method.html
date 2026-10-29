@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050a18">
+  <meta name="description" content="ECsim-X: Energy-Conserving Semi-Implicit Particle-in-Cell simulations, scientific method, GPU acceleration, benchmarks, and developer resources.">
+  <title>Scientific Method | ECsim-X</title>
+  <link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="nav-wrap" data-site-nav></div></header>
+  <main id="main">
+
+<section class="page-hero"><div class="container"><div class="breadcrumbs"><a href="index.html">Home</a> / Scientific Method</div><div class="eyebrow">Numerical foundations</div><h1>The science behind ECsim-X</h1><p class="lead">Particle-in-Cell methods couple kinetic particle dynamics to electromagnetic fields on a computational grid. ECsim-X is described as implementing an Energy-Conserving Semi-Implicit method; details below provide a conceptual introduction and should be reconciled with the project’s published method and source code.</p></div></section>
+<div class="container page-layout"><article class="article"><h2 id="pic">Particle-in-Cell fundamentals</h2><p>In a Particle-in-Cell (PIC) model, charged particles represent the kinetic distribution of a plasma. Particle positions and velocities are advanced in time, while charge and current moments are mapped to a spatial mesh. Electromagnetic fields are then computed on the grid and interpolated back to particle locations.</p><div class="equation">d<strong>x</strong><sub>p</sub>/dt = <strong>v</strong><sub>p</sub>, &nbsp; m<sub>p</sub> d<strong>v</strong><sub>p</sub>/dt = q<sub>p</sub>(<strong>E</strong> + <strong>v</strong><sub>p</sub> × <strong>B</strong>)</div><p>These equations express the Lorentz-force motion of a particle. The precise time centering, field discretization, and particle-grid shape functions depend on the implementation.</p>
+<h2 id="semi">Energy-conserving semi-implicit methods</h2><p>Semi-implicit schemes treat selected couplings implicitly while retaining an explicit or predictor-based structure for other operations. The ECsim method is designed around energy-conserving particle-field coupling. Exact algorithmic steps, assumptions, and conservation properties should be documented from the canonical ECsim-X references and implementation.</p><div class="notice"><strong>Source verification needed.</strong> The project repository and primary method paper were not included with this request. This page therefore avoids asserting a specific linear system, solver, stencil, or conservation tolerance.</div>
+<h2 id="coupling">Particle-grid coupling</h2><p>Two central operations connect particle and field representations:</p><ul><li><strong>Deposition:</strong> particle properties are accumulated on grid locations to construct charge or current quantities.</li><li><strong>Interpolation:</strong> grid-based electric and magnetic fields are evaluated at particle positions.</li></ul><p>Consistent discretization of these operations is important for numerical behavior, parallel correctness, and energy accounting.</p>
+<h2 id="energy">Energy and validation</h2><p>A useful validation workflow tracks particle kinetic energy, field energy, and any energy exchange or source terms included in the model. Diagnostics should define units, normalization, boundary contributions, and whether reported conservation is exact, bounded, or approximate.</p><div class="equation">W<sub>total</sub> = W<sub>particles</sub> + W<sub>fields</sub> + W<sub>sources / boundaries</sub></div><p>This is a bookkeeping template rather than a claim about the exact diagnostic implemented in ECsim-X.</p>
+<h2 id="workflow">Typical PIC workflow</h2><div class="steps"><div class="step"><div><h3>Initialize</h3><p>Set the physical parameters, mesh, particle distribution, and initial fields.</p></div></div><div class="step"><div><h3>Deposit particle quantities</h3><p>Map the required particle moments to the grid.</p></div></div><div class="step"><div><h3>Update electromagnetic fields</h3><p>Apply the selected field discretization and semi-implicit coupling.</p></div></div><div class="step"><div><h3>Advance particles</h3><p>Interpolate fields and update particle states according to the numerical scheme.</p></div></div><div class="step"><div><h3>Diagnose and repeat</h3><p>Record physical diagnostics and numerical invariants before advancing to the next step.</p></div></div></div><p class="small">Workflow is conceptual; verify ordering and implementation-specific stages against the ECsim-X source.</p></article><aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#pic">PIC fundamentals</a><a href="#semi">Semi-implicit method</a><a href="#coupling">Particle-grid coupling</a><a href="#energy">Energy and validation</a><a href="#workflow">Simulation workflow</a></aside></div>
+  </main>
+  <footer class="footer" data-site-footer></footer>
+</body>
+</html>

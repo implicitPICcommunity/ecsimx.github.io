@@ -1,6 +1,7 @@
 const pages = [
   ["Home", "index.html"],
   ["Scientific Method", "scientific-method.html"],
+  ["MPI Parallelization", "parallelization.html"],
   ["GPU Acceleration", "gpu-acceleration.html"],
   ["Benchmarks", "benchmarks.html"],
   ["Documentation", "documentation.html"],
@@ -11,7 +12,8 @@ const pages = [
   ["About", "about.html"]
 ];
 
-const current = location.pathname.split("/").pop() || "index.html";
+const leaf = location.pathname.split("/").pop() || "index.html";
+const current = leaf.endsWith(".html") ? leaf : leaf + ".html";
 const savedTheme = (() => { try { return localStorage.getItem("ecsimx-theme"); } catch { return null; } })();
 if (savedTheme === "light" || savedTheme === "dark") document.documentElement.dataset.theme = savedTheme;
 
@@ -19,7 +21,7 @@ const nav = document.querySelector("[data-site-nav]");
 if (nav) {
   nav.innerHTML = `
     <a class="brand" href="index.html" aria-label="ECsim-X home">
-      <img class="brand-logo" data-brand-logo src="assets/ecsimx-logo-dark.png" alt="ECsim-X: Energy-Conserving Semi-Implicit PIC" width="190" height="64">
+      <img class="brand-logo" data-brand-logo src="assets/ecsimx-logo-dark.svg" alt="ECsim-X: Energy-Conserving Semi-Implicit PIC" width="190" height="64">
     </a>
     <div class="nav-controls">
       <button class="theme-toggle" type="button" aria-label="Switch to light mode" title="Switch theme"><span class="theme-icon" aria-hidden="true">☼</span><span class="theme-label">Light mode</span></button>
@@ -55,7 +57,7 @@ if (nav) {
     themeButton.querySelector(".theme-label").textContent = theme === "dark" ? "Light mode" : "Dark mode";
     themeButton.querySelector(".theme-icon").textContent = theme === "dark" ? "☼" : "◐";
     const logo = nav.querySelector("[data-brand-logo]");
-    if (logo) logo.src = theme === "light" ? "assets/ecsimx-logo-light.png" : "assets/ecsimx-logo-dark.png";
+    if (logo) logo.src = theme === "light" ? "assets/ecsimx-logo-light.svg" : "assets/ecsimx-logo-dark.svg";
     try { localStorage.setItem("ecsimx-theme", theme); } catch {}
   };
   applyTheme(document.documentElement.dataset.theme || "dark");
@@ -66,13 +68,13 @@ const footer = document.querySelector("[data-site-footer]");
 if (footer) {
   footer.innerHTML = `
     <div class="footer-main">
-      <a class="brand footer-brand" href="index.html"><img class="footer-logo" src="assets/ecsimx-logo-dark.png" alt="ECsim-X" width="180" height="60" data-footer-logo></a>
+      <a class="brand footer-brand" href="index.html"><img class="footer-logo" src="assets/ecsimx-logo-dark.svg" alt="ECsim-X" width="180" height="60" data-footer-logo></a>
       <p>ECsim-X is a scientific application for space plasma physics simulations using an energy-conserving semi-implicit Particle-in-Cell method.</p>
       <p class="footer-note">The code is publicly available. Public availability does not by itself imply an open-source license; users should consult the project's official distribution terms.</p>
     </div>
-    <div class="footer-links"><span>Project</span>${pages.slice(1).map(([label, href]) => `<a href="${href}">${label}</a>`).join("")}</div>
-    <div class="footer-bottom"><span>ECsim-X · Scientific simulation software</span><a href="404.html">Missing page?</a></div>`;
-  const syncFooterLogo = () => { const img=footer.querySelector('[data-footer-logo]'); if(img) img.src=document.documentElement.dataset.theme==='light'?'assets/ecsimx-logo-light.png':'assets/ecsimx-logo-dark.png'; };
+    <div class="footer-links"><span>Project</span>${pages.map(([label, href]) => `<a href="${href}">${label}</a>`).join("")}</div>
+    <div class="footer-bottom"><span>© <span data-year></span> ECsim-X · Scientific simulation software</span><a href="#main">Back to top ↑</a></div>`;
+  const syncFooterLogo = () => { const img=footer.querySelector('[data-footer-logo]'); if(img) img.src=document.documentElement.dataset.theme==='light'?'assets/ecsimx-logo-light.svg':'assets/ecsimx-logo-dark.svg'; };
   syncFooterLogo();
   document.addEventListener('click', e => { if(e.target.closest('.theme-toggle')) syncFooterLogo(); });
 }

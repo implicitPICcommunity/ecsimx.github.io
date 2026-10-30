@@ -216,3 +216,31 @@ main{min-height:65vh}.container{width:min(var(--max),calc(100% - 2.5rem));margin
 :root[data-theme="light"] .menu-toggle .menu-brand-label { color: #192536 !important; }
 :root[data-theme="light"] .menu-toggle .menu-brand-hyphen { color: #536174 !important; }
 :root[data-theme="light"] .menu-toggle .menu-brand-label b { color: #d96608 !important; }
+
+/* Scientific content components: figures, metrics, diagrams, references */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:1.2rem 0}
+.metric{border:1px solid var(--line);border-radius:14px;padding:1.1rem 1.2rem;background:linear-gradient(145deg,rgba(14,31,57,.9),rgba(7,16,33,.92));min-width:0}
+.metric b{display:block;font:700 clamp(1.7rem,3vw,2.3rem)/1.1 Manrope,sans-serif;letter-spacing:-.04em;color:var(--orange)}
+.metric span{display:block;margin-top:.35rem;font-size:.8rem;color:var(--muted);line-height:1.45}
+.metric small{display:block;margin-top:.5rem;font:.66rem "DM Mono",monospace;letter-spacing:.04em;color:var(--muted);opacity:.85}
+.figure{margin:1.4rem 0;border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:1rem 1.1rem}
+.figure svg{display:block;width:100%;height:auto}
+.figure figcaption{font-size:.8rem;color:var(--muted);margin-top:.7rem;line-height:1.5}
+.dg-box{fill:var(--panel2);stroke:var(--cyan);stroke-width:1.3}.dg-box.hot{stroke:var(--orange)}.dg-box.cpu{stroke:var(--muted);stroke-dasharray:4 3}
+.dg-t{fill:var(--text);font:600 13px Manrope,sans-serif;text-anchor:middle}.dg-s{fill:var(--muted);font:11px "DM Mono",monospace;text-anchor:middle}
+.dg-a{stroke:var(--cyan);stroke-width:1.8;fill:none}.dg-l{fill:var(--muted);font:10.5px "DM Mono",monospace}
+.ch-axis{stroke:var(--line);stroke-width:1}.ch-grid{stroke:var(--line);stroke-width:1;stroke-dasharray:3 4;opacity:.7}.ch-txt{fill:var(--muted);font:10.5px "DM Mono",monospace}
+.ch-l1{fill:none;stroke:var(--cyan);stroke-width:2.2}.ch-l2{fill:none;stroke:var(--orange);stroke-width:2.2}.ch-l3{fill:none;stroke:var(--pink);stroke-width:2.2}
+.ch-p1{fill:var(--cyan)}.ch-p2{fill:var(--orange)}.ch-p3{fill:var(--pink)}
+.legend{display:flex;gap:1.1rem;flex-wrap:wrap;font:.72rem "DM Mono",monospace;color:var(--muted);margin-top:.6rem}.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;margin-right:.4rem;vertical-align:middle}
+.refs{padding-left:1.2rem}.refs li{margin:.7rem 0;font-size:.92rem}.refs em{color:var(--text);font-style:normal;font-weight:600}
+.source-tag{display:inline-block;font:.68rem "DM Mono",monospace;letter-spacing:.05em;color:var(--cyan);border:1px solid rgba(23,201,245,.35);border-radius:5px;padding:.15rem .45rem;margin-left:.4rem;vertical-align:middle;text-transform:none}
+details.data{border:1px solid var(--line);border-radius:10px;margin:1rem 0;background:var(--panel)}details.data summary{cursor:pointer;padding:.8rem 1rem;font-weight:700;font-size:.9rem;color:var(--text)}details.data .table-wrap{border:0;border-top:1px solid var(--line);border-radius:0}
+.status-yes,.status-no{font:.7rem "DM Mono",monospace;letter-spacing:.05em;border-radius:5px;padding:.2rem .45rem;white-space:nowrap}.status-yes{color:var(--cyan);border:1px solid rgba(23,201,245,.4);background:rgba(23,201,245,.08)}.status-no{color:var(--muted);border:1px solid var(--line)}
+.page-links{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-top:1.6rem;text-align:left}.page-links a{display:block;border:1px solid var(--line);border-radius:10px;padding:.7rem .9rem;background:var(--panel);color:var(--text);font-weight:600;font-size:.9rem}.page-links a:hover{border-color:var(--cyan)}.page-links small{display:block;color:var(--muted);font-weight:400;font-size:.76rem}
+.footer-bottom a:hover{color:var(--cyan)}
+:root[data-theme="light"] .metric{background:#fff}:root[data-theme="light"] .metric b{color:var(--orange)}
+:root[data-theme="light"] .source-tag{border-color:rgba(0,127,163,.35)}
+@media(max-width:900px){.metrics{grid-template-columns:repeat(2,1fr)}.page-links{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.metrics,.page-links{grid-template-columns:1fr}}
+.empty-state h1{margin-left:auto;margin-right:auto}

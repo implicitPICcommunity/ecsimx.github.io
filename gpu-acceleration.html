@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#050a18">
-  <meta name="description" content="ECsim-X: Energy-Conserving Semi-Implicit Particle-in-Cell simulations, scientific method, GPU acceleration, benchmarks, and developer resources.">
+  <meta name="description" content="OpenACC GPU acceleration of ECsim: offloaded kernels, data layout, atomics, managed memory, and measured speedups.">
   <title>GPU Acceleration | ECsim-X</title>
   <link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/styles.css">
@@ -14,13 +14,55 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="nav-wrap" data-site-nav></div></header>
   <main id="main">
+<section class="page-hero"><div class="container"><div class="breadcrumbs"><a href="index.html">Home</a> / GPU Acceleration</div><div class="eyebrow">Parallel execution</div><h1>GPU acceleration of ECsim</h1><p class="lead">An OpenACC port offloads moment gathering and the particle mover to NVIDIA GPUs while keeping the MPI structure, with a CUDA implementation in development.</p></div></section><div class="container page-layout"><article class="article">
 
-<section class="page-hero"><div class="container"><div class="breadcrumbs"><a href="index.html">Home</a> / GPU Acceleration</div><div class="eyebrow">Parallel execution</div><h1>GPU acceleration, from algorithm to hardware</h1><p class="lead">GPU execution can increase throughput for particle and grid workloads when computation, memory layout, data movement, and synchronization are designed together. This page presents a vendor-neutral framework rather than unverified claims about ECsim-X internals.</p></div></section>
-<div class="container page-layout"><article class="article"><h2 id="motivation">Why use GPUs?</h2><p>PIC workloads often expose substantial parallelism across particles and grid cells. Accelerator performance nevertheless depends on the balance between arithmetic, memory traffic, reductions, communication, and workload irregularity.</p>
-<h2 id="models">CPU and GPU execution models</h2><div class="table-wrap"><table><thead><tr><th>Concern</th><th>CPU-oriented considerations</th><th>GPU-oriented considerations</th></tr></thead><tbody><tr><td>Parallel work</td><td>Threading and task scheduling</td><td>Large sets of concurrent work items</td></tr><tr><td>Memory</td><td>Cache locality and NUMA placement</td><td>Coalesced access and device memory capacity</td></tr><tr><td>Synchronization</td><td>Locks, barriers, reductions</td><td>Kernel boundaries, atomics, device synchronization</td></tr><tr><td>Data movement</td><td>Host memory hierarchy</td><td>Host-device transfers and data residency</td></tr></tbody></table></div><p>The actual CPU/GPU division of responsibility must be established by inspecting the source and build configuration.</p>
-<h2 id="parallel">Parallel particle and grid operations</h2><p>Particle advancement may offer independent per-particle work, while deposition and field updates can involve grid contention, stencil dependencies, or reductions. Candidate strategies include spatial sorting, local accumulation, reduction design, and minimizing unnecessary synchronization. These are design options, not statements about the current ECsim-X implementation.</p><div class="visual-panel"><svg viewBox="0 0 720 235" width="100%" role="img" aria-label="Conceptual GPU workflow from host control to kernels and diagnostics"><g font-family="monospace" text-anchor="middle"><rect x="20" y="35" width="175" height="70" rx="10" fill="#0b1c34" stroke="#2475a7"/><text x="107" y="63" fill="#f0f8ff" font-size="14">Host / CPU</text><text x="107" y="84" fill="#9eb8d3" font-size="11">Setup · control</text><rect x="270" y="35" width="180" height="70" rx="10" fill="#0c2c43" stroke="#17c9f5"/><text x="360" y="63" fill="#f0f8ff" font-size="14">Device kernels</text><text x="360" y="84" fill="#9eb8d3" font-size="11">Particles · grid</text><rect x="525" y="35" width="175" height="70" rx="10" fill="#0b1c34" stroke="#2475a7"/><text x="612" y="63" fill="#f0f8ff" font-size="14">Diagnostics</text><text x="612" y="84" fill="#9eb8d3" font-size="11">Check · record</text><g stroke="#17c9f5" stroke-width="2" fill="none"><path d="M195 70h68l-8-6m8 6-8 6M450 70h68l-8-6m8 6-8 6"/></g><path d="M360 105v55h-245v-45" stroke="#ec168a" stroke-dasharray="5 5" fill="none"/><text x="360" y="195" fill="#a5bbd3" font-size="12">Conceptual only · actual transfers and dependencies are implementation-specific</text></g></svg></div>
-<h2 id="memory">Memory management and data movement</h2><p>Developers should document the location and ownership of particle arrays, field arrays, temporary buffers, and diagnostics. Minimize transfers that interrupt a device-resident workflow, but account for initialization, output, and host-side control paths. Record allocation lifetime and error handling explicitly.</p>
-<h2 id="profile">Profiling and scalability</h2><ul><li>Measure kernel time separately from end-to-end timestep time.</li><li>Track data-transfer, allocation, synchronization, and communication overhead.</li><li>Profile representative particle counts and grid sizes.</li><li>Compare numerical diagnostics before and after optimization.</li><li>Report hardware, compiler, configuration, precision, and repetition methodology with each result.</li></ul><div class="notice"><strong>Implementation details pending.</strong> GPU vendor, language, framework, kernel names, memory model, and supported hardware should be filled in after reviewing the actual codebase.</div></article><aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#motivation">Motivation</a><a href="#models">CPU and GPU models</a><a href="#parallel">Parallel work</a><a href="#memory">Memory and transfers</a><a href="#profile">Profiling and scalability</a></aside></div>
+<h2 id="overview">Overview</h2>
+<p>The GPU port of ECsim is implemented with <strong>OpenACC</strong>, chosen over OpenMP offloading because it appeared more mature and better supported by compilers at the time, and because it preserves the original code structure. Work is offloaded where the cost is: moment gathering and the particle mover. A pure <strong>CUDA</strong> implementation is under development; no CUDA results are published here.</p>
+<figure class="figure"><svg viewBox="0 0 720 190" role="img" aria-label="ECsim time cycle: moment gathering, field solve, particle mover, then repeat">
+<g>
+<rect class="dg-box hot" x="15" y="25" width="200" height="85" rx="10"/><text class="dg-t" x="115" y="55">1 · Moment gathering</text><text class="dg-s" x="115" y="76">Ĵ and mass matrices M</text><text class="dg-s" x="115" y="94">from particles</text>
+<rect class="dg-box cpu" x="260" y="25" width="200" height="85" rx="10"/><text class="dg-t" x="360" y="55">2 · Field solve</text><text class="dg-s" x="360" y="76">linear Maxwell system</text><text class="dg-s" x="360" y="94">E<tspan baseline-shift="super" font-size="8">n+θ</tspan>, B<tspan baseline-shift="super" font-size="8">n+θ</tspan></text>
+<rect class="dg-box hot" x="505" y="25" width="200" height="85" rx="10"/><text class="dg-t" x="605" y="55">3 · Particle mover</text><text class="dg-s" x="605" y="76">explicit update, no</text><text class="dg-s" x="605" y="94">nonlinear iterations</text>
+<path class="dg-a" d="M215 67h38m-7-6 7 6-7 6M460 67h38m-7-6 7 6-7 6"/>
+<path class="dg-a" d="M605 110v22h-490v-14m-6 6 6-6 6 6" stroke-dasharray="5 4"/>
+<text class="dg-l" x="115" y="125" text-anchor="middle" style="fill:var(--orange)">GPU · OpenACC</text><text class="dg-l" x="360" y="125" text-anchor="middle" style="fill:var(--muted)">CPU · PETSc GMRES (MPI)</text><text class="dg-l" x="605" y="125" text-anchor="middle" style="fill:var(--orange)">GPU · OpenACC</text>
+<text class="dg-l" x="360" y="160" text-anchor="middle">next time step</text>
+</g></svg><figcaption>Execution split in the published OpenACC version. Initialisation and the PETSc field solver run on the CPU with MPI only.</figcaption></figure>
+
+<h2 id="kernels">What runs on the GPU</h2>
+<div class="table-wrap"><table><thead><tr><th>Routine</th><th>Role</th><th>Status</th></tr></thead><tbody><tr><td><code>computeMoments</code></td><td>Hatted current and the 14 mass matrices (nine components each)</td><td><span class='status-yes'>GPU</span></td></tr><tr><td><code>updateVelocity</code>, <code>updatePosition</code>, <code>fixPosition</code></td><td>Particle mover; independent per-particle loops</td><td><span class='status-yes'>GPU</span></td></tr><tr><td><code>computeCharge</code>, <code>computeCurrent</code></td><td>Diagnostics: charge density, current, pressure tensor</td><td><span class='status-yes'>GPU</span></td></tr><tr><td>Field solver (PETSc GMRES)</td><td>Linear Maxwell system</td><td><span class='status-no'>CPU · MPI</span></td></tr><tr><td>Initialisation, I/O (HDF5)</td><td>Setup and output</td><td><span class='status-no'>CPU</span></td></tr></tbody></table></div>
+
+<h2 id="layout">Data layout and kernel design</h2>
+<ul>
+<li><strong>Flattened arrays:</strong> 3D field pointers were flattened to 1D arrays for locality. Hatted currents are N<sub>s</sub>×N<sub>x</sub>×N<sub>y</sub>×N<sub>z</sub> arrays; mass-matrix components are 14×N<sub>x</sub>×N<sub>y</sub>×N<sub>z</sub> arrays with no species index.</li>
+<li><strong>Scalars instead of small arrays:</strong> the 3×3 rotation matrix became nine scalars; the 2×2×2 weight and magnetic-field arrays were flattened.</li>
+<li><strong>Unrolling:</strong> inner interpolation and deposition loops were unrolled by hand. Full unrolling of the mass-matrix loops was avoided because it raised register pressure.</li>
+<li><strong>Loop order:</strong> in the mass-matrix kernel, the neighbour index N′ is the outermost loop and a <code>switch</code> selects one of the 14 stored neighbours.</li>
+</ul>
+
+<h2 id="atomics">Race handling: atomics</h2>
+<p>Many particles deposit onto the same grid node, so accumulation into the current and mass matrices uses <code>#pragma acc atomic update</code>; the diagnostic routines do the same. A sorting-plus-reduction alternative was tried and dropped because of compiler limitations with array-based reductions.</p>
+
+<h2 id="memory">Memory management</h2>
+<p>The first version relied on compiler-managed transfers with no explicit data clauses; Nsight Systems showed heavy host–device transfers and page faults. The final version uses CUDA <strong>managed memory</strong> with <code>cudaMemPrefetchAsync</code> to move arrays to the GPU before use and back afterwards, which avoids deep-copying complex data structures. The paper also reports benefits from the unified memory architecture of the GH200.</p>
+
+<h2 id="results">Measured effect</h2>
+<div class="metrics">
+<div class="metric"><b>≈5×</b><span>overall node speedup vs. 32 CPU cores</span><small>4× A100, 4 MPI tasks</small></div>
+<div class="metric"><b>≈15×</b><span>speed-up of the moment-gathering block</span><small>now 23% of runtime</small></div>
+<div class="metric"><b>≈3×</b><span>lower energy to solution</span><small>415 vs. 1295 kJ</small></div>
+<div class="metric"><b>3.8–12.8×</b><span>moment gathering, A100/H100/GH200 vs. V100</span><small>1 task, 1 GPU</small></div>
+</div>
+<p>Full tables and conditions are on the <a href="benchmarks.html">Benchmarks</a> page.</p>
+
+<h2 id="stack">Toolchain used in the study</h2>
+<p>The published results used NVIDIA HPC SDK 23.11 (CUDA 12.3, <code>-O3</code>, target cc80 with managed memory), Open MPI 4.1.6, HDF5 1.14.3, PETSc 3.20.1, OpenBLAS and H5hut 2.0.0, with CMake for builds. Validation (1D and 2D two-stream and current-filamentation instabilities) showed CPU and GPU curves overlapping.</p>
+
+<h2 id="limits">Limitations and next steps</h2>
+<ul><li>Only partial offload: the field solver and initialisation remain CPU-bound.</li><li>I/O, especially raw particle dumps (about 50 s each, three per run in the benchmark), leaves the GPU idle.</li><li>Strong-scaling efficiency drops beyond 64 GPUs on the smallest tested grid.</li><li>Large particle counts are needed, and ECsim does not use spatial smoothing.</li><li>Planned: a CUDA implementation, I/O optimization, better CPU–GPU overlap, and offloading more routines.</li></ul>
+<h2 id="references">References</h2><ol class="refs"><li>G. Lapenta, <em>Exactly energy conserving semi-implicit particle in cell formulation</em>, Journal of Computational Physics (2017) — the original ECsim formulation, where the energy-conservation property is derived.</li><li><a href="https://arxiv.org/abs/1711.05051" rel="noopener">D. Gonzalez-Herrero, E. Boella, G. Lapenta, <em>Performance analysis and implementation details of the Energy Conserving Semi-Implicit Method code (ECsim)</em>, arXiv:1711.05051</a></li><li><a href="https://arxiv.org/abs/2603.16624" rel="noopener">E. Boella, N. Shukla, F. Spiga, M. Kabiri Chimeh, M. Bettencourt, M. E. Innocenti, <em>Accelerating the Particle-In-Cell code ECsim with OpenACC</em>, arXiv:2603.16624</a></li></ol>
+
+</article><aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#overview">Overview</a><a href="#kernels">What runs on the GPU</a><a href="#layout">Data layout</a><a href="#atomics">Atomics</a><a href="#memory">Memory management</a><a href="#results">Measured effect</a><a href="#stack">Toolchain</a><a href="#limits">Limitations</a><a href="#references">References</a></aside></div>
   </main>
   <footer class="footer" data-site-footer></footer>
 </body>

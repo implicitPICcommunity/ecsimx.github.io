@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050a18">
+  <meta name="description" content="ECsim-X MPI parallelization: Cartesian domain decomposition, particle exchange, ghost nodes, PETSc GMRES, and published scaling.">
+  <title>MPI Parallelization | ECsim-X</title>
+  <link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="nav-wrap" data-site-nav></div></header>
+  <main id="main">
+<section class="page-hero"><div class="container"><div class="breadcrumbs"><a href="index.html">Home</a> / MPI Parallelization</div><div class="eyebrow">Distributed memory</div><h1>Massively parallel by design</h1><p class="lead">ECsim-X inherits the MPI architecture of ECsim: Cartesian domain decomposition, neighbour-only particle exchange, and a matrix-free GMRES field solver.</p></div></section><div class="container page-layout"><article class="article">
+
+<h2 id="decomp">Domain decomposition</h2>
+<p>ECsim splits the simulation box across MPI processes in a Cartesian topology. Each process owns the field values of its subdomain and all particles located inside it. Two classes hold the state: <code>Fields</code> (E on nodes, B on nodes and cell centres, implicit current, mass matrices) and <code>Particles</code> (one instance per species).</p>
+<figure class="figure"><svg viewBox="0 0 720 230" role="img" aria-label="Cartesian domain decomposition with ghost-node exchange between neighbouring MPI processes">
+<rect class="dg-box" x="40" y="30" width="180" height="150" rx="8"/><rect class="dg-box" x="270" y="30" width="180" height="150" rx="8"/><rect class="dg-box" x="500" y="30" width="180" height="150" rx="8"/>
+<text class="dg-t" x="130" y="62">MPI rank i</text><text class="dg-s" x="130" y="84">fields on owned nodes</text><text class="dg-s" x="130" y="102">particles inside subdomain</text>
+<text class="dg-t" x="360" y="62">MPI rank i+1</text><text class="dg-s" x="360" y="84">fields on owned nodes</text><text class="dg-s" x="360" y="102">particles inside subdomain</text>
+<text class="dg-t" x="590" y="62">MPI rank i+2</text><text class="dg-s" x="590" y="84">fields on owned nodes</text><text class="dg-s" x="590" y="102">particles inside subdomain</text>
+<path class="dg-a" d="M222 130h46m-7-6 7 6-7 6m-39 0-7-6 7-6M452 130h46m-7-6 7 6-7 6m-39 0-7-6 7-6"/>
+<text class="dg-l" x="245" y="152" text-anchor="middle">ghost / boundary</text><text class="dg-l" x="475" y="152" text-anchor="middle">ghost / boundary</text>
+<text class="dg-l" x="360" y="214" text-anchor="middle">1D slice of a 3D Cartesian process topology</text></svg><figcaption>Processes exchange boundary data only with their neighbours, except where noted below.</figcaption></figure>
+
+<h2 id="phases">Communication in each phase</h2>
+<div class="table-wrap"><table><thead><tr><th>Phase</th><th>What is communicated</th><th>Notes</th></tr></thead><tbody><tr><td>Moment gathering</td><td>Ĵ and mass-matrix contributions on boundary nodes are summed across neighbouring processes</td><td>The only part of this phase that requires communication across processes</td></tr><tr><td>Field solve</td><td>Ghost-node values exchanged with neighbours in every solver sub-iteration</td><td>PETSc matrix-free GMRES; the main communication cost at scale</td></tr><tr><td>Particle mover</td><td>Particles that leave a subdomain are copied to face buffers and sent with <code>MPI_Sendrecv</code></td><td>Six buffers per species, initially sized at 5% of the particles per process, resizable</td></tr></tbody></table></div>
+
+<h2 id="memory">Particle storage</h2>
+<p>Each species stores seven one-dimensional arrays (three position components, three velocity components, and the charge). The alpha tensors are recomputed in the mover rather than stored, so particle storage dominates memory use.</p>
+
+<h2 id="profile">Where the time goes</h2>
+<p>In a profile with 512 MPI processes on a 160³ grid (homogeneous 3D electron–ion plasma, 512 particles per species per cell), moment gathering accounted for almost 90% of runtime, and about 75% of that was mass-matrix computation. The field solver and particle mover were almost negligible by comparison. With at least about 100 particles per cell typically required to control noise, this profile is representative of production-style runs.</p>
+
+<h2 id="scaling">Published CPU scaling</h2>
+<div class="metrics">
+<div class="metric"><b>86%</b><span>weak-scaling efficiency at 4096 cores</span><small>MareNostrum, Xeon E5-2670</small></div>
+<div class="metric"><b>92%</b><span>weak-scaling efficiency at 4096 cores</span><small>SuperMUC, Xeon E5-2680</small></div>
+</div>
+<ul><li><strong>Weak scaling:</strong> 20×20×20 cells per process (about 0.5 GB per process), referenced to one node of 16 MPI processes. Efficiency loss comes mainly from communication; moment gathering scales slightly better than the whole code and the field solver scales worst.</li><li><strong>Strong scaling:</strong> near-ideal on MareNostrum with a slight shortfall at 4096 cores. The paper reports two problem sizes (16–512 and 256–4096 cores); its text and figure caption disagree on the grid dimensions, so they are not repeated here.</li><li><strong>Load balance:</strong> well balanced across threads; spin time grows from one node to 32 nodes, which the authors attribute to field-solver communication, their main optimization target.</li></ul>
+<p class="small">Source: Gonzalez-Herrero et al. Hardware is from 2017-era systems; performance tests ran 10 cycles.</p>
+
+<h2 id="hybrid">MPI with GPUs</h2>
+<p>In the OpenACC port, the MPI structure is unchanged. In the published GPU runs on Leonardo Booster nodes (four NVIDIA A100 per node), each MPI task is bound to one GPU. Moment gathering and the particle mover run on the GPU, while the PETSc field solver and its MPI communication remain on the CPU. See <a href="gpu-acceleration.html">GPU Acceleration</a> for details and <a href="benchmarks.html">Benchmarks</a> for the measured scaling up to 1024 GPUs.</p>
+<div class="notice blue-note"><strong>Known limit.</strong> The OpenACC paper reports that strong-scaling efficiency falls beyond 64 GPUs on its smallest grid and attributes this to communication overhead, which GPU acceleration can amplify because the computation gets faster.</div>
+<h2 id="references">References</h2><ol class="refs"><li>G. Lapenta, <em>Exactly energy conserving semi-implicit particle in cell formulation</em>, Journal of Computational Physics (2017) — the original ECsim formulation, where the energy-conservation property is derived.</li><li><a href="https://arxiv.org/abs/1711.05051" rel="noopener">D. Gonzalez-Herrero, E. Boella, G. Lapenta, <em>Performance analysis and implementation details of the Energy Conserving Semi-Implicit Method code (ECsim)</em>, arXiv:1711.05051</a></li><li><a href="https://arxiv.org/abs/2603.16624" rel="noopener">E. Boella, N. Shukla, F. Spiga, M. Kabiri Chimeh, M. Bettencourt, M. E. Innocenti, <em>Accelerating the Particle-In-Cell code ECsim with OpenACC</em>, arXiv:2603.16624</a></li></ol>
+
+</article><aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#decomp">Domain decomposition</a><a href="#phases">Communication</a><a href="#memory">Particle storage</a><a href="#profile">Profile</a><a href="#scaling">CPU scaling</a><a href="#hybrid">MPI with GPUs</a><a href="#references">References</a></aside></div>
+  </main>
+  <footer class="footer" data-site-footer></footer>
+</body>
+</html>

@@ -40,3 +40,6 @@ The ECsim-X logo is a vector SVG traced from the supplied artwork (`assets/ecsim
 
 ## Deployment note
 Pages use relative asset paths. `404.html` is served by the host at the URL that failed, so on a host that serves it for nested paths or from a sub-path, add `<base href="/your-subpath/">` to its `<head>`. There is no footer link to the 404 page; the former "Missing page?" link pointed at it and was removed.
+
+## Design system
+Palette: indigo ink, solar orange (from the logo), plasma violet; light and dark themes via CSS variables in `assets/styles.css`. Type: Bricolage Grotesque (headings/UI), Source Serif 4 (reading text), JetBrains Mono (code), loaded from Google Fonts. The home hero is a canvas illustration of gyrating electrons and ions (`assets/site.js`); it is labelled as an illustration, is paused off-screen, and renders a still frame when reduced motion is requested.

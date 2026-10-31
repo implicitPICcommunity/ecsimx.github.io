@@ -104,3 +104,64 @@ document.querySelectorAll("[data-copy]").forEach(button => {
     catch { button.textContent = "Select text to copy"; }
   });
 });
+
+/* Home hero: electrons (small, fast, one sense) and ions (large, slow, opposite sense) gyrating in a uniform B field. Illustrative only. */
+(() => {
+  const canvas = document.querySelector("[data-gyro]");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let W = 0, H = 0, dpr = 1, parts = [], colors = {}, raf = 0, running = false;
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const readColors = () => {
+    const cs = getComputedStyle(document.documentElement);
+    colors = { ion: cs.getPropertyValue("--orange").trim(), ele: cs.getPropertyValue("--plasma").trim() };
+  };
+  const build = () => {
+    const r = canvas.getBoundingClientRect();
+    dpr = Math.min(devicePixelRatio || 1, 2); W = r.width; H = r.height;
+    canvas.width = W * dpr; canvas.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const wide = W > 760, n = wide ? 15 : 9, k = Math.min(W, 1100) / 1100;
+    parts = [];
+    for (let i = 0; i < n; i++) {
+      const ion = i % 3 === 0;
+      parts.push({
+        ion, cx: wide ? rnd(W * .38, W * .98) : rnd(0, W), cy: rnd(H * .1, H * .9),
+        r: (ion ? rnd(70, 150) : rnd(16, 46)) * Math.max(k, .6),
+        w: (ion ? -1 : 1) * (ion ? rnd(.35, .6) : rnd(1.3, 2.2)),
+        a: rnd(0, 6.28), vx: rnd(.08, .22), vy: rnd(-.05, .05), trail: []
+      });
+    }
+  };
+  const step = dt => {
+    for (const p of parts) {
+      p.a += p.w * dt; p.cx += p.vx * dt * 18; p.cy += p.vy * dt * 18;
+      if (p.cx - p.r > W + 40) { p.cx = -p.r - 40; p.trail.length = 0; p.cy = rnd(H * .1, H * .9); }
+      p.trail.push([p.cx + Math.cos(p.a) * p.r, p.cy + Math.sin(p.a) * p.r]);
+      if (p.trail.length > (p.ion ? 260 : 150)) p.trail.shift();
+    }
+  };
+  const draw = () => {
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineCap = "round";
+    for (const p of parts) {
+      const t = p.trail, n = t.length; if (n < 2) continue;
+      ctx.strokeStyle = p.ion ? colors.ion : colors.ele; ctx.lineWidth = p.ion ? 2.2 : 1.5;
+      for (let i = 1; i < n; i += 2) {
+        ctx.globalAlpha = (i / n) * (p.ion ? .8 : .7);
+        ctx.beginPath(); ctx.moveTo(t[i - 1][0], t[i - 1][1]); ctx.lineTo(t[Math.min(i + 1, n - 1)][0], t[Math.min(i + 1, n - 1)][1]); ctx.stroke();
+      }
+      ctx.globalAlpha = 1; ctx.fillStyle = p.ion ? colors.ion : colors.ele;
+      ctx.beginPath(); ctx.arc(t[n - 1][0], t[n - 1][1], p.ion ? 4.5 : 3, 0, 6.283); ctx.fill();
+    }
+  };
+  let last = 0;
+  const loop = ts => { const dt = Math.min((ts - last) / 1000 || .016, .05); last = ts; step(dt); draw(); raf = requestAnimationFrame(loop); };
+  const start = () => { if (!running && !still) { running = true; last = performance.now(); raf = requestAnimationFrame(loop); } };
+  const stop = () => { running = false; cancelAnimationFrame(raf); };
+  const init = () => { readColors(); build(); for (let i = 0; i < 260; i++) step(.03); draw(); };
+  init();
+  addEventListener("resize", () => { init(); });
+  new MutationObserver(() => { readColors(); draw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  new IntersectionObserver(e => e[0].isIntersecting ? start() : stop()).observe(canvas);
+})();

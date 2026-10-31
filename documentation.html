@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#050a18">
+  <meta name="theme-color" content="#15112b">
   <meta name="description" content="ECsim-X documentation: tested toolchain, choosing theta and time step, running with one MPI rank per GPU, output and troubleshooting.">
   <title>Documentation | ECsim-X</title>
   <link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
@@ -18,12 +18,12 @@
 
 <label for="doc-search" class="small">Search documentation topics</label><input class="search-box" id="doc-search" data-doc-search type="search" placeholder="Search installation, inputs, GPU, diagnostics…">
 <div class="cards">
-<article class="card doc-card" data-searchable><div class="card-icon">01</div><h3>Installation</h3><p>Toolchain and dependencies used in the published study.</p><a href="#install" class="card-link">Read section ↗</a></article>
-<article class="card doc-card" data-searchable><div class="card-icon">02</div><h3>Choosing parameters</h3><p>θ, time step, particles per cell, and solver settings.</p><a href="#configure" class="card-link">Read section ↗</a></article>
-<article class="card doc-card" data-searchable><div class="card-icon">03</div><h3>Running simulations</h3><p>MPI ranks per GPU and run layout.</p><a href="#run" class="card-link">Read section ↗</a></article>
-<article class="card doc-card" data-searchable><div class="card-icon">04</div><h3>Output and diagnostics</h3><p>HDF5 output and energy accounting.</p><a href="#output" class="card-link">Read section ↗</a></article>
-<article class="card doc-card" data-searchable><div class="card-icon">05</div><h3>Troubleshooting</h3><p>Build, GPU memory, and numerical checks.</p><a href="#trouble" class="card-link">Read section ↗</a></article>
-<article class="card doc-card" data-searchable><div class="card-icon">06</div><h3>FAQ</h3><p>GPU support, accuracy, and examples.</p><a href="#faq" class="card-link">Read section ↗</a></article>
+<article class="card doc-card" data-searchable><div class="card-icon">01</div><h3>Installation</h3><p>Toolchain and dependencies used in the published study.</p><a href="#install" class="card-link">Read section</a></article>
+<article class="card doc-card" data-searchable><div class="card-icon">02</div><h3>Choosing parameters</h3><p>θ, time step, particles per cell, and solver settings.</p><a href="#configure" class="card-link">Read section</a></article>
+<article class="card doc-card" data-searchable><div class="card-icon">03</div><h3>Running simulations</h3><p>MPI ranks per GPU and run layout.</p><a href="#run" class="card-link">Read section</a></article>
+<article class="card doc-card" data-searchable><div class="card-icon">04</div><h3>Output and diagnostics</h3><p>HDF5 output and energy accounting.</p><a href="#output" class="card-link">Read section</a></article>
+<article class="card doc-card" data-searchable><div class="card-icon">05</div><h3>Troubleshooting</h3><p>Build, GPU memory, and numerical checks.</p><a href="#trouble" class="card-link">Read section</a></article>
+<article class="card doc-card" data-searchable><div class="card-icon">06</div><h3>FAQ</h3><p>GPU support, accuracy, and examples.</p><a href="#faq" class="card-link">Read section</a></article>
 </div>
 <h2 id="install">Installation</h2>
 <p>The OpenACC study built ECsim-X with CMake and the following stack. Treat these as the tested reference configuration, not minimum requirements.</p>

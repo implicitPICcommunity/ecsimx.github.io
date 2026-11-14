@@ -225,3 +225,5 @@ details.data{margin:1rem 0;background:var(--panel);border-radius:14px}details.da
   .page-layout{display:block;padding:0}.figure,.table-wrap,.metric,.step,.equation{break-inside:avoid}
   a{color:#000;text-decoration:none}.footer{background:#fff;padding-top:1rem}
 }
+
+.spot-fact{margin:1.4rem 0 0;padding-top:1.1rem;border-top:1px solid var(--line);font:600 1.02rem/1.45 var(--display);color:var(--text)}

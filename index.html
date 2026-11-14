@@ -31,14 +31,14 @@
 <section class="section spotlight" id="cuda-results"><div class="container">
 <h2>ECsim-X in CUDA: 9.0× faster than OpenACC on a single JUPITER Booster node</h2>
 <p class="spot-claim">ECsim-X is the first semi-implicit PIC code to scale to 4,096 GPUs.</p>
-<p class="lead">Implemented in CUDA, it runs 9.0× faster than the OpenACC implementation and 34× faster than the reference CPU version on one JUPITER Booster node. Strong- and weak-scaling experiments reach parallel efficiencies of 79.7% on 2,048 GPUs and 78.6% on 4,096 GPUs.</p>
+<p class="lead">Implemented in CUDA, it runs 9.0× faster than the OpenACC implementation and 34× faster than the reference CPU version on one JUPITER Booster node. Scaling experiments reach parallel efficiencies of 79.7% on 2,048 GPUs and 78.6% on 4,096 GPUs, where the weak-scaling run simulates 2.9 trillion particles in FP64 precision.</p>
 <div class="spot-grid">
 <div class="spot-group"><h3>On a single JUPITER Booster node</h3><div class="spot-pair">
 <div class="spot-num"><b>9.0×</b><span>speedup over the OpenACC implementation</span></div>
 <div class="spot-num"><b>34×</b><span>speedup over the reference CPU version</span></div></div></div>
-<div class="spot-group"><h3>Strong- and weak-scaling experiments</h3><div class="spot-pair">
+<div class="spot-group"><h3>Scaling experiments</h3><div class="spot-pair">
 <div class="spot-num"><b>79.7%</b><span>parallel efficiency at 2,048 GPUs</span></div>
-<div class="spot-num"><b>78.6%</b><span>parallel efficiency at 4,096 GPUs</span></div></div></div>
+<div class="spot-num"><b>78.6%</b><span>weak-scaling efficiency at 4,096 GPUs</span></div></div><p class="spot-fact">Weak scaling efficiency of 78.6% achieved across 4,096 GPUs, simulating 2.9 trillion particles in FP64 precision.</p></div>
 </div>
 <p class="spot-note">Reported by the ECsim-X developers. Test conditions and the paper reference will be added here once published. <a href="benchmarks.html#cuda">Read the details</a>, or compare with the <a href="benchmarks.html#headline">earlier OpenACC results</a>.</p>
 </div></section>

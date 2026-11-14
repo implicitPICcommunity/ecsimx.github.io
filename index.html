@@ -23,10 +23,38 @@
 <section class="hero"><div class="container hero-grid"><div class="hero-copy">
   <h1>A plasma code that conserves energy and runs on GPUs.</h1>
   <p class="lead">ECsim-X is a massively parallel, fully electromagnetic Particle-in-Cell code for space plasma physics. It builds on the Energy-Conserving Semi-Implicit Method (ECsim), parallelized with MPI, and adds GPU acceleration with OpenACC and CUDA.</p>
-  <div class="hero-actions"><a class="button primary" href="scientific-method.html">Read the method</a><a class="button" href="#cuda-results">See the CUDA results</a></div>
-  <div class="tag-row"><span class="pill">Energy-conserving</span><span class="pill">Unconditionally stable</span><span class="pill">MPI + CUDA</span><span class="pill pill-hot">First semi-implicit PIC code at 4,096 GPUs</span></div>
+  <div class="hero-actions"><a class="button primary" href="scientific-method.html">Read the method</a><a class="button" href="#implementations">Compare the implementations</a></div>
+  <div class="tag-row"><span class="pill">Energy-conserving</span><span class="pill">Unconditionally stable</span><span class="pill">MPI + OpenACC + CUDA</span><span class="pill pill-hot">First semi-implicit PIC code at 4,096 GPUs</span></div>
 </div></div>
 <div class="hero-visual"><canvas data-gyro aria-hidden="true"></canvas><p class="hero-note">Illustration: electrons and ions gyrating in a magnetic field. Not simulation output.</p></div></section>
+
+<section class="section-tight" id="implementations"><div class="container">
+<div class="section-heading"><h2>Three implementations of one method</h2><p>ECsim-X grew in three steps: the MPI code on CPU clusters, then GPU acceleration with OpenACC, then a CUDA implementation.</p></div>
+<ol class="impl-list">
+<li class="impl impl-mpi"><h3>MPI</h3><p class="impl-sub">ECsim on CPU clusters</p><p>Cartesian domain decomposition. Weak-scaling efficiency of 86% and 92% at 4,096 cores on two supercomputers in the published study.</p><a class="text-link" href="parallelization.html">MPI parallelization</a></li>
+<li class="impl impl-acc"><h3>OpenACC</h3><p class="impl-sub">First GPU version</p><p>Moment gathering and the particle mover run on the GPU. About 5× faster than 32 CPU cores on one node, and 78% weak-scaling efficiency up to 1,024 A100 GPUs.</p><a class="text-link" href="#openacc-results">OpenACC results</a></li>
+<li class="impl impl-cuda"><h3>CUDA <span class="pill pill-hot">Latest</span></h3><p class="impl-sub">Newest implementation</p><p>9.0× faster than OpenACC and 34× faster than the CPU reference on one JUPITER Booster node. 78.6% weak-scaling efficiency on 4,096 GPUs with 2.9 trillion particles.</p><a class="text-link" href="#cuda-results">CUDA results</a></li>
+</ol></div></section>
+
+<section class="section"><div class="container"><div class="section-heading"><div class="eyebrow">How it works</div><h2>One linear solve per step, no nonlinear iteration</h2><p>ECsim computes the particles’ response to the fields analytically and folds it into a linear Maxwell system. The cycle therefore looks like an explicit PIC code, while remaining stable for large time steps and coarse grids.</p></div>
+<figure class="figure"><svg viewBox="0 0 720 175" role="img" aria-label="ECsim time cycle: moment gathering, field solve, particle mover, then repeat">
+<g>
+<rect class="dg-box " x="15" y="25" width="200" height="85" rx="10"/><text class="dg-t" x="115" y="55">1 · Moment gathering</text><text class="dg-s" x="115" y="76">Ĵ and mass matrices M</text><text class="dg-s" x="115" y="94">from particles</text>
+<rect class="dg-box " x="260" y="25" width="200" height="85" rx="10"/><text class="dg-t" x="360" y="55">2 · Field solve</text><text class="dg-s" x="360" y="76">linear Maxwell system</text><text class="dg-s" x="360" y="94">E<tspan baseline-shift="super" font-size="8">n+θ</tspan>, B<tspan baseline-shift="super" font-size="8">n+θ</tspan></text>
+<rect class="dg-box " x="505" y="25" width="200" height="85" rx="10"/><text class="dg-t" x="605" y="55">3 · Particle mover</text><text class="dg-s" x="605" y="76">explicit update, no</text><text class="dg-s" x="605" y="94">nonlinear iterations</text>
+<path class="dg-a" d="M215 67h38m-7-6 7 6-7 6M460 67h38m-7-6 7 6-7 6"/>
+<path class="dg-a" d="M605 110v22h-490v-14m-6 6 6-6 6 6" stroke-dasharray="5 4"/>
+
+<text class="dg-l" x="360" y="158" text-anchor="middle">next time step</text>
+</g></svg><figcaption>The ECsim cycle (Gonzalez-Herrero et al.). Moment gathering dominates the cost: about 90% of runtime in the published 512-process CPU profile.</figcaption></figure>
+<div class="hero-actions"><a class="text-link" href="scientific-method.html">Algorithm and energy conservation</a><a class="text-link" href="parallelization.html">MPI parallelization</a></div></div></section>
+<section class="section-tight" id="openacc-results"><div class="container"><div class="section-heading"><div class="eyebrow">Published results</div><h2>OpenACC results on Leonardo</h2><p>Figures below are reported by Boella et al. for the OpenACC port of ECsim on NVIDIA A100 GPUs. They are quoted from the paper, not re-measured for this site; see <a href="benchmarks.html">Benchmarks</a> for the test conditions.</p></div>
+<div class="metrics">
+<div class="metric"><b>≈5×</b><span>node-level speedup vs. the 32-core CPU reference</span><small>1 node · 4× A100</small></div>
+<div class="metric"><b>≈3×</b><span>lower energy to solution (415 vs. 1295 kJ)</span><small>10 runs each</small></div>
+<div class="metric"><b>78%</b><span>weak-scaling efficiency up to 1024 GPUs</span><small>vs. 4 GPUs</small></div>
+<div class="metric"><b>70%</b><span>strong-scaling efficiency up to 64 GPUs</span><small>840×840 grid</small></div>
+</div></div></section>
 
 <section class="section spotlight" id="cuda-results"><div class="container">
 <h2>ECsim-X in CUDA: 9.0× faster than OpenACC on a single JUPITER Booster node</h2>
@@ -41,30 +69,8 @@
 <div class="spot-num"><b>78.6%</b><span>weak-scaling efficiency at 4,096 GPUs</span></div></div></div>
 </div>
 <div class="spot-wide"><div class="spot-num"><b>2.9 trillion</b><span>particles simulated, FP64 precision</span></div><p>Weak scaling efficiency of 78.6% achieved across 4,096 GPUs, simulating 2.9 trillion particles in FP64 precision.</p></div>
-<p class="spot-note">Reported by the ECsim-X developers. Test conditions and the paper reference will be added here once published. <a href="benchmarks.html#cuda">Read the details</a>, or compare with the <a href="benchmarks.html#headline">earlier OpenACC results</a>.</p>
+<p class="spot-note">Reported by the ECsim-X developers. Test conditions and the paper reference will be added here once published. <a href="benchmarks.html#cuda">Read the details</a>, or compare with the <a href="#openacc-results">OpenACC results</a> above.</p>
 </div></section>
-
-
-<section class="section"><div class="container"><div class="section-heading"><div class="eyebrow">How it works</div><h2>One linear solve per step, no nonlinear iteration</h2><p>ECsim computes the particles’ response to the fields analytically and folds it into a linear Maxwell system. The cycle therefore looks like an explicit PIC code, while remaining stable for large time steps and coarse grids.</p></div>
-<figure class="figure"><svg viewBox="0 0 720 175" role="img" aria-label="ECsim time cycle: moment gathering, field solve, particle mover, then repeat">
-<g>
-<rect class="dg-box " x="15" y="25" width="200" height="85" rx="10"/><text class="dg-t" x="115" y="55">1 · Moment gathering</text><text class="dg-s" x="115" y="76">Ĵ and mass matrices M</text><text class="dg-s" x="115" y="94">from particles</text>
-<rect class="dg-box " x="260" y="25" width="200" height="85" rx="10"/><text class="dg-t" x="360" y="55">2 · Field solve</text><text class="dg-s" x="360" y="76">linear Maxwell system</text><text class="dg-s" x="360" y="94">E<tspan baseline-shift="super" font-size="8">n+θ</tspan>, B<tspan baseline-shift="super" font-size="8">n+θ</tspan></text>
-<rect class="dg-box " x="505" y="25" width="200" height="85" rx="10"/><text class="dg-t" x="605" y="55">3 · Particle mover</text><text class="dg-s" x="605" y="76">explicit update, no</text><text class="dg-s" x="605" y="94">nonlinear iterations</text>
-<path class="dg-a" d="M215 67h38m-7-6 7 6-7 6M460 67h38m-7-6 7 6-7 6"/>
-<path class="dg-a" d="M605 110v22h-490v-14m-6 6 6-6 6 6" stroke-dasharray="5 4"/>
-
-<text class="dg-l" x="360" y="158" text-anchor="middle">next time step</text>
-</g></svg><figcaption>The ECsim cycle (Gonzalez-Herrero et al.). Moment gathering dominates the cost: about 90% of runtime in the published 512-process CPU profile.</figcaption></figure>
-<div class="hero-actions"><a class="text-link" href="scientific-method.html">Algorithm and energy conservation</a><a class="text-link" href="parallelization.html">MPI parallelization</a></div></div></section>
-
-<section class="section-tight"><div class="container"><div class="section-heading"><div class="eyebrow">Published results</div><h2>Earlier OpenACC results on Leonardo</h2><p>Figures below are reported by Boella et al. for the OpenACC port of ECsim on NVIDIA A100 GPUs. They are quoted from the paper, not re-measured for this site; see <a href="benchmarks.html">Benchmarks</a> for the test conditions.</p></div>
-<div class="metrics">
-<div class="metric"><b>≈5×</b><span>node-level speedup vs. the 32-core CPU reference</span><small>1 node · 4× A100</small></div>
-<div class="metric"><b>≈3×</b><span>lower energy to solution (415 vs. 1295 kJ)</span><small>10 runs each</small></div>
-<div class="metric"><b>78%</b><span>weak-scaling efficiency up to 1024 GPUs</span><small>vs. 4 GPUs</small></div>
-<div class="metric"><b>70%</b><span>strong-scaling efficiency up to 64 GPUs</span><small>840×840 grid</small></div>
-</div></div></section>
 
 <section class="section"><div class="container"><div class="section-heading"><div class="eyebrow">Explore ECsim-X</div><h2>From numerical foundations to implementation details</h2><p>The physical model, the MPI and GPU implementations, published performance data, and resources for users and developers.</p></div>
 <div class="cards">

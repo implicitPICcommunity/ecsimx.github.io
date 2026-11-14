@@ -233,3 +233,13 @@ details.data{margin:1rem 0;background:var(--panel);border-radius:14px}details.da
 .spot-wide .spot-num span{font-size:1.02rem}
 .spot-wide p{margin:0;font:600 clamp(1.05rem,1.7vw,1.3rem)/1.45 var(--display);color:var(--text);max-width:34ch}
 @media(max-width:760px){.spot-wide{grid-template-columns:1fr;padding:1.4rem 1.3rem}}
+
+/* Implementation timeline on the home page */
+.impl-list{list-style:none;margin:1.6rem 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;counter-reset:impl}
+.impl{position:relative;padding:1.5rem 1.6rem 1.4rem;background:var(--panel);border-radius:18px;border-top:5px solid var(--line);display:flex;flex-direction:column;gap:.2rem}
+.impl-acc{border-top-color:var(--plasma)}.impl-cuda{border-top-color:var(--orange);background:linear-gradient(160deg,color-mix(in srgb,var(--orange) 14%,var(--panel)),var(--panel) 65%)}
+.impl h3{margin:0;font-size:1.7rem;display:flex;align-items:center;gap:.6rem}
+.impl-sub{margin:0 0 .6rem;font:600 .9rem var(--display);color:var(--muted)}
+.impl p{font-size:.98rem}.impl .text-link{margin-top:auto;align-self:flex-start}
+.impl+.impl:before{content:"";position:absolute;left:-1.2rem;top:2.2rem;width:1.2rem;height:2px;background:var(--line)}
+@media(max-width:1000px){.impl-list{grid-template-columns:1fr}.impl+.impl:before{display:none}}

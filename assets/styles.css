@@ -208,3 +208,20 @@ details.data{margin:1rem 0;background:var(--panel);border-radius:14px}details.da
 
 .pill-hot{background:var(--orange);color:var(--on-orange)}
 .spot-claim{margin:1rem 0 .4rem;font:800 clamp(1.35rem,2.6vw,2rem)/1.2 var(--display);letter-spacing:-.025em;color:var(--text);max-width:34ch;padding-left:1rem;border-left:5px solid var(--orange)}
+
+/* Polish: placeholders and links inside list rows, scroll-spy, citations, print */
+.placeholder{justify-self:start;align-self:start;width:max-content;max-width:100%}
+.card-link{justify-self:start;align-self:start}
+.toc a{border-left:3px solid transparent;margin-left:-1rem;padding-left:calc(1rem - 3px);transition:color .15s}
+.toc a.active{color:var(--text);border-left-color:var(--orange);font-weight:700}
+.cite{position:relative;margin:1rem 0 1.4rem}
+.cite .code{margin:0;padding-right:5.5rem;font-size:.8rem;white-space:pre}
+.cite-btn{position:absolute;top:.6rem;right:.6rem;padding:.3rem .8rem;border-radius:999px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font:700 .78rem var(--display)}
+.cite-btn:hover{border-color:var(--orange)}
+.cite-label{font:700 .95rem var(--display);color:var(--text);margin:1.4rem 0 .2rem}
+@media print{
+  :root,:root[data-theme="light"]{--bg:#fff;--bg-deep:#fff;--panel:#fff;--panel2:#f1f1f1;--line:#ccc;--text:#000;--muted:#333;--orange:#a34400;--plasma:#2a1fa0;--on-orange:#fff}
+  body{font-size:11pt}.site-header,.toc,.skip-link,.hero-visual,.page-hero:after,.spotlight:before,.cite-btn,.footer-bottom a,.hero-actions{display:none!important}
+  .page-layout{display:block;padding:0}.figure,.table-wrap,.metric,.step,.equation{break-inside:avoid}
+  a{color:#000;text-decoration:none}.footer{background:#fff;padding-top:1rem}
+}

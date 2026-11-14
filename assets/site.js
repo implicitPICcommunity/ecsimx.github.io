@@ -165,3 +165,25 @@ document.querySelectorAll("[data-copy]").forEach(button => {
   new MutationObserver(() => { readColors(); draw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
   new IntersectionObserver(e => e[0].isIntersecting ? start() : stop()).observe(canvas);
 })();
+
+/* Table of contents: highlight the section being read */
+(() => {
+  const links = [...document.querySelectorAll(".toc a[href^='#']")];
+  if (!links.length || !("IntersectionObserver" in window)) return;
+  const map = new Map(links.map(a => [a.getAttribute("href").slice(1), a]));
+  const targets = [...map.keys()].map(id => document.getElementById(id)).filter(Boolean);
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { links.forEach(a => a.classList.remove("active")); map.get(e.target.id)?.classList.add("active"); } });
+  }, { rootMargin: "-90px 0px -65% 0px" });
+  targets.forEach(t => io.observe(t));
+})();
+
+/* Copy buttons for citation blocks */
+document.querySelectorAll("[data-copy]").forEach(btn => {
+  btn.addEventListener("click", async () => {
+    const text = document.getElementById(btn.dataset.copy)?.innerText || "";
+    try { await navigator.clipboard.writeText(text); btn.textContent = "Copied"; }
+    catch { btn.textContent = "Press Ctrl+C"; }
+    setTimeout(() => (btn.textContent = "Copy"), 1800);
+  });
+});

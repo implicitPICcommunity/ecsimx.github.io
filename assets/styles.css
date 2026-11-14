@@ -205,3 +205,6 @@ details.data{margin:1rem 0;background:var(--panel);border-radius:14px}details.da
 .spot-note{font:.88rem/1.55 var(--display);color:var(--muted);max-width:75ch}
 @media(max-width:1000px){.spot-grid{grid-template-columns:1fr}}
 @media(max-width:520px){.spot-group{padding:1.4rem 1.3rem 1.6rem}.spot-pair{gap:1rem}}
+
+.pill-hot{background:var(--orange);color:var(--on-orange)}
+.spot-claim{margin:1rem 0 .4rem;font:800 clamp(1.35rem,2.6vw,2rem)/1.2 var(--display);letter-spacing:-.025em;color:var(--text);max-width:34ch;padding-left:1rem;border-left:5px solid var(--orange)}

@@ -19,13 +19,14 @@
   <h1>A plasma code that conserves energy and runs on GPUs.</h1>
   <p class="lead">ECsim-X is a massively parallel, fully electromagnetic Particle-in-Cell code for space plasma physics. It builds on the Energy-Conserving Semi-Implicit Method (ECsim), parallelized with MPI, and adds GPU acceleration with OpenACC and CUDA.</p>
   <div class="hero-actions"><a class="button primary" href="scientific-method.html">Read the method</a><a class="button" href="#cuda-results">See the CUDA results</a></div>
-  <div class="tag-row"><span class="pill">Energy-conserving</span><span class="pill">Unconditionally stable</span><span class="pill">MPI + CUDA</span></div>
+  <div class="tag-row"><span class="pill">Energy-conserving</span><span class="pill">Unconditionally stable</span><span class="pill">MPI + CUDA</span><span class="pill pill-hot">First semi-implicit PIC code at 4,096 GPUs</span></div>
 </div></div>
 <div class="hero-visual"><canvas data-gyro aria-hidden="true"></canvas><p class="hero-note">Illustration: electrons and ions gyrating in a magnetic field. Not simulation output.</p></div></section>
 
 <section class="section spotlight" id="cuda-results"><div class="container">
 <h2>ECsim-X in CUDA: 9.0× faster than OpenACC on a single JUPITER Booster node</h2>
-<p class="lead">The semi-implicit PIC code ECsim-X, implemented in CUDA, runs 9.0× faster than the OpenACC implementation and 34× faster than the reference CPU version on one JUPITER Booster node. Strong- and weak-scaling experiments reach parallel efficiencies of 79.7% on 2,048 GPUs and 78.6% on 4,096 GPUs.</p>
+<p class="spot-claim">ECsim-X is the first semi-implicit PIC code to scale to 4,096 GPUs.</p>
+<p class="lead">Implemented in CUDA, it runs 9.0× faster than the OpenACC implementation and 34× faster than the reference CPU version on one JUPITER Booster node. Strong- and weak-scaling experiments reach parallel efficiencies of 79.7% on 2,048 GPUs and 78.6% on 4,096 GPUs.</p>
 <div class="spot-grid">
 <div class="spot-group"><h3>On a single JUPITER Booster node</h3><div class="spot-pair">
 <div class="spot-num"><b>9.0×</b><span>speedup over the OpenACC implementation</span></div>

@@ -36,7 +36,7 @@
 <div class="metric"><b>79.7%</b><span>parallel efficiency at 2,048 GPUs</span><small>strong- and weak-scaling</small></div>
 <div class="metric"><b>78.6%</b><span>parallel efficiency at 4,096 GPUs</span><small>strong- and weak-scaling</small></div>
 </div>
-<p>These figures are reported by the ECsim-X developers; see <a href="benchmarks.html#cuda">Benchmarks</a> for the context. Kernel-level design of the CUDA version is not described on this site yet.</p>
+<p><strong>ECsim-X is the first semi-implicit PIC code to scale to 4,096 GPUs.</strong> These figures are reported by the ECsim-X developers; see <a href="benchmarks.html#cuda">Benchmarks</a> for the context. Kernel-level design of the CUDA version is not described on this site yet.</p>
 
 <h2 id="kernels">What runs on the GPU</h2>
 <div class="table-wrap"><table><thead><tr><th>Routine</th><th>Role</th><th>Status</th></tr></thead><tbody><tr><td><code>computeMoments</code></td><td>Hatted current and the 14 mass matrices (nine components each)</td><td><span class='status-yes'>GPU</span></td></tr><tr><td><code>updateVelocity</code>, <code>updatePosition</code>, <code>fixPosition</code></td><td>Particle mover; independent per-particle loops</td><td><span class='status-yes'>GPU</span></td></tr><tr><td><code>computeCharge</code>, <code>computeCurrent</code></td><td>Diagnostics: charge density, current, pressure tensor</td><td><span class='status-yes'>GPU</span></td></tr><tr><td>Field solver (PETSc GMRES)</td><td>Linear Maxwell system</td><td><span class='status-no'>CPU · MPI</span></td></tr><tr><td>Initialisation, I/O (HDF5)</td><td>Setup and output</td><td><span class='status-no'>CPU</span></td></tr></tbody></table></div>

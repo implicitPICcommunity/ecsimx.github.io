@@ -14,9 +14,19 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="nav-wrap" data-site-nav></div></header>
   <main id="main">
-<section class="page-hero"><div class="container"><div class="breadcrumbs"><a href="index.html">Home</a> / Benchmarks</div><div class="eyebrow">Performance and scalability</div><h1>Benchmarks from published studies</h1><p class="lead">Scaling, speedup, and energy results reported for the MPI and OpenACC implementations, with their hardware and test conditions.</p></div></section><div class="container page-layout"><article class="article">
+<section class="page-hero"><div class="container"><div class="breadcrumbs"><a href="index.html">Home</a> / Benchmarks</div><div class="eyebrow">Performance and scalability</div><h1>Benchmarks from published studies</h1><p class="lead">Scaling, speedup, and energy results reported for the MPI, OpenACC and CUDA implementations, with their hardware and test conditions.</p></div></section><div class="container page-layout"><article class="article">
 
-<div class="notice blue-note"><strong>Data source.</strong> Every number on this page is quoted from the published papers listed in the references; none was re-measured for this website. Each result carries its hardware and test conditions. Results for the CUDA implementation are not yet published here.</div>
+<div class="notice blue-note"><strong>Data source.</strong> Every number on this page is quoted from the published papers listed in the references; none was re-measured for this website. Each result carries its hardware and test conditions. The CUDA figures in the first section are reported by the ECsim-X developers and do not yet have a paper reference on this site.</div>
+
+<h2 id="cuda">CUDA implementation on JUPITER Booster</h2>
+<div class="metrics">
+<div class="metric"><b>9.0×</b><span>speedup over the OpenACC implementation</span><small>single JUPITER Booster node</small></div>
+<div class="metric"><b>34×</b><span>speedup over the reference CPU version</span><small>single JUPITER Booster node</small></div>
+<div class="metric"><b>79.7%</b><span>parallel efficiency at 2,048 GPUs</span><small>strong- and weak-scaling experiments</small></div>
+<div class="metric"><b>78.6%</b><span>parallel efficiency at 4,096 GPUs</span><small>strong- and weak-scaling experiments</small></div>
+</div>
+<p>The semi-implicit PIC code ECsim-X, implemented in CUDA, is 9.0× faster than the OpenACC implementation and 34× faster than the reference CPU version on a single JUPITER Booster node. Strong- and weak-scaling experiments demonstrate parallel efficiencies of 79.7% at 2,048 GPUs and 78.6% at 4,096 GPUs.</p>
+<p><span class="placeholder">Add from the paper</span> problem set-up, grid and particles per cell, GPU model, CPU reference configuration, efficiency baseline for each scaling series, and the citation.</p>
 
 <h2 id="headline">Headline results (OpenACC, Leonardo)</h2>
 <div class="metrics">
@@ -53,9 +63,9 @@
 
 <h2 id="protocol">Reporting your own results</h2>
 <ol><li>Record source revision, compiler, flags, dependencies, and precision.</li><li>Record hardware, device count, CPU topology, and interconnect.</li><li>Specify grid, particles per cell, time step, θ, and output frequency.</li><li>Separate initialisation, time step, I/O, and total runtime.</li><li>Repeat measurements and report a defined statistic and variability.</li><li>Verify energy and physical diagnostics for every configuration compared.</li></ol>
-<h2 id="references">References</h2><ol class="refs"><li>G. Lapenta, <em>Exactly energy conserving semi-implicit particle in cell formulation</em>, Journal of Computational Physics (2017) — the original ECsim formulation, where the energy-conservation property is derived.</li><li><a href="https://arxiv.org/abs/1711.05051" rel="noopener">D. Gonzalez-Herrero, E. Boella, G. Lapenta, <em>Performance analysis and implementation details of the Energy Conserving Semi-Implicit Method code (ECsim)</em>, arXiv:1711.05051</a></li><li><a href="https://arxiv.org/abs/2603.16624" rel="noopener">E. Boella, N. Shukla, F. Spiga, M. Kabiri Chimeh, M. Bettencourt, M. E. Innocenti, <em>Accelerating the Particle-In-Cell code ECsim with OpenACC</em>, arXiv:2603.16624</a></li></ol>
+<h2 id="references">References</h2><ol class="refs"><li><span class="placeholder">Add citation</span> ECsim-X CUDA implementation and JUPITER Booster scaling study (source of the CUDA results above).</li><li>G. Lapenta, <em>Exactly energy conserving semi-implicit particle in cell formulation</em>, Journal of Computational Physics (2017) — the original ECsim formulation, where the energy-conservation property is derived.</li><li><a href="https://arxiv.org/abs/1711.05051" rel="noopener">D. Gonzalez-Herrero, E. Boella, G. Lapenta, <em>Performance analysis and implementation details of the Energy Conserving Semi-Implicit Method code (ECsim)</em>, arXiv:1711.05051</a></li><li><a href="https://arxiv.org/abs/2603.16624" rel="noopener">E. Boella, N. Shukla, F. Spiga, M. Kabiri Chimeh, M. Bettencourt, M. E. Innocenti, <em>Accelerating the Particle-In-Cell code ECsim with OpenACC</em>, arXiv:2603.16624</a></li></ol>
 
-</article><aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#headline">Headline results</a><a href="#breakdown">Node breakdown</a><a href="#gpus">GPU generations</a><a href="#weak">Weak scaling</a><a href="#strong">Strong scaling</a><a href="#cpu">CPU results</a><a href="#energy">Energy method</a><a href="#protocol">Reporting protocol</a><a href="#references">References</a></aside></div>
+</article><aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#cuda">CUDA on JUPITER</a><a href="#headline">OpenACC headline results</a><a href="#breakdown">Node breakdown</a><a href="#gpus">GPU generations</a><a href="#weak">Weak scaling</a><a href="#strong">Strong scaling</a><a href="#cpu">CPU results</a><a href="#energy">Energy method</a><a href="#protocol">Reporting protocol</a><a href="#references">References</a></aside></div>
   </main>
   <footer class="footer" data-site-footer></footer>
 </body>

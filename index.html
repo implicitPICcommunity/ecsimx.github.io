@@ -17,11 +17,26 @@
 
 <section class="hero"><div class="container hero-grid"><div class="hero-copy">
   <h1>A plasma code that conserves energy and runs on GPUs.</h1>
-  <p class="lead">ECsim-X is a massively parallel, fully electromagnetic Particle-in-Cell code for space plasma physics. It builds on the Energy-Conserving Semi-Implicit Method (ECsim), parallelized with MPI, and adds GPU acceleration.</p>
-  <div class="hero-actions"><a class="button primary" href="scientific-method.html">Read the method</a><a class="button" href="benchmarks.html">See published results</a></div>
-  <div class="tag-row"><span class="pill">Energy-conserving</span><span class="pill">Unconditionally stable</span><span class="pill">MPI + GPU</span></div>
+  <p class="lead">ECsim-X is a massively parallel, fully electromagnetic Particle-in-Cell code for space plasma physics. It builds on the Energy-Conserving Semi-Implicit Method (ECsim), parallelized with MPI, and adds GPU acceleration with OpenACC and CUDA.</p>
+  <div class="hero-actions"><a class="button primary" href="scientific-method.html">Read the method</a><a class="button" href="#cuda-results">See the CUDA results</a></div>
+  <div class="tag-row"><span class="pill">Energy-conserving</span><span class="pill">Unconditionally stable</span><span class="pill">MPI + CUDA</span></div>
 </div></div>
 <div class="hero-visual"><canvas data-gyro aria-hidden="true"></canvas><p class="hero-note">Illustration: electrons and ions gyrating in a magnetic field. Not simulation output.</p></div></section>
+
+<section class="section spotlight" id="cuda-results"><div class="container">
+<h2>ECsim-X in CUDA: 9.0× faster than OpenACC on a single JUPITER Booster node</h2>
+<p class="lead">The semi-implicit PIC code ECsim-X, implemented in CUDA, runs 9.0× faster than the OpenACC implementation and 34× faster than the reference CPU version on one JUPITER Booster node. Strong- and weak-scaling experiments reach parallel efficiencies of 79.7% on 2,048 GPUs and 78.6% on 4,096 GPUs.</p>
+<div class="spot-grid">
+<div class="spot-group"><h3>On a single JUPITER Booster node</h3><div class="spot-pair">
+<div class="spot-num"><b>9.0×</b><span>speedup over the OpenACC implementation</span></div>
+<div class="spot-num"><b>34×</b><span>speedup over the reference CPU version</span></div></div></div>
+<div class="spot-group"><h3>Strong- and weak-scaling experiments</h3><div class="spot-pair">
+<div class="spot-num"><b>79.7%</b><span>parallel efficiency at 2,048 GPUs</span></div>
+<div class="spot-num"><b>78.6%</b><span>parallel efficiency at 4,096 GPUs</span></div></div></div>
+</div>
+<p class="spot-note">Reported by the ECsim-X developers. Test conditions and the paper reference will be added here once published. <a href="benchmarks.html#cuda">Read the details</a>, or compare with the <a href="benchmarks.html#headline">earlier OpenACC results</a>.</p>
+</div></section>
+
 
 <section class="section"><div class="container"><div class="section-heading"><div class="eyebrow">How it works</div><h2>One linear solve per step, no nonlinear iteration</h2><p>ECsim computes the particles’ response to the fields analytically and folds it into a linear Maxwell system. The cycle therefore looks like an explicit PIC code, while remaining stable for large time steps and coarse grids.</p></div>
 <figure class="figure"><svg viewBox="0 0 720 175" role="img" aria-label="ECsim time cycle: moment gathering, field solve, particle mover, then repeat">
@@ -36,7 +51,7 @@
 </g></svg><figcaption>The ECsim cycle (Gonzalez-Herrero et al.). Moment gathering dominates the cost: about 90% of runtime in the published 512-process CPU profile.</figcaption></figure>
 <div class="hero-actions"><a class="text-link" href="scientific-method.html">Algorithm and energy conservation</a><a class="text-link" href="parallelization.html">MPI parallelization</a></div></div></section>
 
-<section class="section-tight"><div class="container"><div class="section-heading"><div class="eyebrow">Published results</div><h2>Measured on Leonardo (OpenACC)</h2><p>Figures below are reported by Boella et al. for the OpenACC port of ECsim on NVIDIA A100 GPUs. They are quoted from the paper, not re-measured for this site; see <a href="benchmarks.html">Benchmarks</a> for the test conditions.</p></div>
+<section class="section-tight"><div class="container"><div class="section-heading"><div class="eyebrow">Published results</div><h2>Earlier OpenACC results on Leonardo</h2><p>Figures below are reported by Boella et al. for the OpenACC port of ECsim on NVIDIA A100 GPUs. They are quoted from the paper, not re-measured for this site; see <a href="benchmarks.html">Benchmarks</a> for the test conditions.</p></div>
 <div class="metrics">
 <div class="metric"><b>≈5×</b><span>node-level speedup vs. the 32-core CPU reference</span><small>1 node · 4× A100</small></div>
 <div class="metric"><b>≈3×</b><span>lower energy to solution (415 vs. 1295 kJ)</span><small>10 runs each</small></div>

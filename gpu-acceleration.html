@@ -14,10 +14,10 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="nav-wrap" data-site-nav></div></header>
   <main id="main">
-<section class="page-hero"><div class="container"><div class="breadcrumbs"><a href="index.html">Home</a> / GPU Acceleration</div><div class="eyebrow">Parallel execution</div><h1>GPU acceleration of ECsim</h1><p class="lead">An OpenACC port offloads moment gathering and the particle mover to NVIDIA GPUs while keeping the MPI structure, with a CUDA implementation in development.</p></div></section><div class="container page-layout"><article class="article">
+<section class="page-hero"><div class="container"><div class="breadcrumbs"><a href="index.html">Home</a> / GPU Acceleration</div><div class="eyebrow">Parallel execution</div><h1>GPU acceleration of ECsim</h1><p class="lead">An OpenACC port offloads moment gathering and the particle mover to NVIDIA GPUs while keeping the MPI structure. A CUDA implementation is 9.0× faster than OpenACC on one JUPITER Booster node.</p></div></section><div class="container page-layout"><article class="article">
 
 <h2 id="overview">Overview</h2>
-<p>The GPU port of ECsim is implemented with <strong>OpenACC</strong>, chosen over OpenMP offloading because it appeared more mature and better supported by compilers at the time, and because it preserves the original code structure. Work is offloaded where the cost is: moment gathering and the particle mover. A pure <strong>CUDA</strong> implementation is under development; no CUDA results are published here.</p>
+<p>The GPU port of ECsim is implemented with <strong>OpenACC</strong>, chosen over OpenMP offloading because it appeared more mature and better supported by compilers at the time, and because it preserves the original code structure. Work is offloaded where the cost is: moment gathering and the particle mover. A <strong>CUDA</strong> implementation of ECsim-X has since been developed; its results are summarised in the next section, and the rest of this page describes the OpenACC version.</p>
 <figure class="figure"><svg viewBox="0 0 720 190" role="img" aria-label="ECsim time cycle: moment gathering, field solve, particle mover, then repeat">
 <g>
 <rect class="dg-box hot" x="15" y="25" width="200" height="85" rx="10"/><text class="dg-t" x="115" y="55">1 · Moment gathering</text><text class="dg-s" x="115" y="76">Ĵ and mass matrices M</text><text class="dg-s" x="115" y="94">from particles</text>
@@ -28,6 +28,15 @@
 <text class="dg-l" x="115" y="125" text-anchor="middle" style="fill:var(--orange)">GPU · OpenACC</text><text class="dg-l" x="360" y="125" text-anchor="middle" style="fill:var(--muted)">CPU · PETSc GMRES (MPI)</text><text class="dg-l" x="605" y="125" text-anchor="middle" style="fill:var(--orange)">GPU · OpenACC</text>
 <text class="dg-l" x="360" y="160" text-anchor="middle">next time step</text>
 </g></svg><figcaption>Execution split in the published OpenACC version. Initialisation and the PETSc field solver run on the CPU with MPI only.</figcaption></figure>
+
+<h2 id="cuda">CUDA implementation</h2>
+<div class="metrics">
+<div class="metric"><b>9.0×</b><span>faster than the OpenACC implementation</span><small>single JUPITER Booster node</small></div>
+<div class="metric"><b>34×</b><span>faster than the reference CPU version</span><small>single JUPITER Booster node</small></div>
+<div class="metric"><b>79.7%</b><span>parallel efficiency at 2,048 GPUs</span><small>strong- and weak-scaling</small></div>
+<div class="metric"><b>78.6%</b><span>parallel efficiency at 4,096 GPUs</span><small>strong- and weak-scaling</small></div>
+</div>
+<p>These figures are reported by the ECsim-X developers; see <a href="benchmarks.html#cuda">Benchmarks</a> for the context. Kernel-level design of the CUDA version is not described on this site yet.</p>
 
 <h2 id="kernels">What runs on the GPU</h2>
 <div class="table-wrap"><table><thead><tr><th>Routine</th><th>Role</th><th>Status</th></tr></thead><tbody><tr><td><code>computeMoments</code></td><td>Hatted current and the 14 mass matrices (nine components each)</td><td><span class='status-yes'>GPU</span></td></tr><tr><td><code>updateVelocity</code>, <code>updatePosition</code>, <code>fixPosition</code></td><td>Particle mover; independent per-particle loops</td><td><span class='status-yes'>GPU</span></td></tr><tr><td><code>computeCharge</code>, <code>computeCurrent</code></td><td>Diagnostics: charge density, current, pressure tensor</td><td><span class='status-yes'>GPU</span></td></tr><tr><td>Field solver (PETSc GMRES)</td><td>Linear Maxwell system</td><td><span class='status-no'>CPU · MPI</span></td></tr><tr><td>Initialisation, I/O (HDF5)</td><td>Setup and output</td><td><span class='status-no'>CPU</span></td></tr></tbody></table></div>
@@ -59,10 +68,10 @@
 <p>The published results used NVIDIA HPC SDK 23.11 (CUDA 12.3, <code>-O3</code>, target cc80 with managed memory), Open MPI 4.1.6, HDF5 1.14.3, PETSc 3.20.1, OpenBLAS and H5hut 2.0.0, with CMake for builds. Validation (1D and 2D two-stream and current-filamentation instabilities) showed CPU and GPU curves overlapping.</p>
 
 <h2 id="limits">Limitations and next steps</h2>
-<ul><li>Only partial offload: the field solver and initialisation remain CPU-bound.</li><li>I/O, especially raw particle dumps (about 50 s each, three per run in the benchmark), leaves the GPU idle.</li><li>Strong-scaling efficiency drops beyond 64 GPUs on the smallest tested grid.</li><li>Large particle counts are needed, and ECsim does not use spatial smoothing.</li><li>Planned: a CUDA implementation, I/O optimization, better CPU–GPU overlap, and offloading more routines.</li></ul>
+<ul><li>Only partial offload: the field solver and initialisation remain CPU-bound.</li><li>I/O, especially raw particle dumps (about 50 s each, three per run in the benchmark), leaves the GPU idle.</li><li>Strong-scaling efficiency drops beyond 64 GPUs on the smallest tested grid.</li><li>Large particle counts are needed, and ECsim does not use spatial smoothing.</li><li>Planned in the OpenACC paper: I/O optimization, better CPU–GPU overlap, and offloading more routines.</li></ul>
 <h2 id="references">References</h2><ol class="refs"><li>G. Lapenta, <em>Exactly energy conserving semi-implicit particle in cell formulation</em>, Journal of Computational Physics (2017) — the original ECsim formulation, where the energy-conservation property is derived.</li><li><a href="https://arxiv.org/abs/1711.05051" rel="noopener">D. Gonzalez-Herrero, E. Boella, G. Lapenta, <em>Performance analysis and implementation details of the Energy Conserving Semi-Implicit Method code (ECsim)</em>, arXiv:1711.05051</a></li><li><a href="https://arxiv.org/abs/2603.16624" rel="noopener">E. Boella, N. Shukla, F. Spiga, M. Kabiri Chimeh, M. Bettencourt, M. E. Innocenti, <em>Accelerating the Particle-In-Cell code ECsim with OpenACC</em>, arXiv:2603.16624</a></li></ol>
 
-</article><aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#overview">Overview</a><a href="#kernels">What runs on the GPU</a><a href="#layout">Data layout</a><a href="#atomics">Atomics</a><a href="#memory">Memory management</a><a href="#results">Measured effect</a><a href="#stack">Toolchain</a><a href="#limits">Limitations</a><a href="#references">References</a></aside></div>
+</article><aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#overview">Overview</a><a href="#cuda">CUDA implementation</a><a href="#kernels">What runs on the GPU (OpenACC)</a><a href="#layout">Data layout</a><a href="#atomics">Atomics</a><a href="#memory">Memory management</a><a href="#results">Measured effect</a><a href="#stack">Toolchain</a><a href="#limits">Limitations</a><a href="#references">References</a></aside></div>
   </main>
   <footer class="footer" data-site-footer></footer>
 </body>
